@@ -1,0 +1,39 @@
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 20px;
+  padding-top: 0;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.ellipsis {
+  display: inline-block;
+  max-width: 150px;     /* Adjust based on your layout */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.custom-btn {
+  background-color: #1976d2;     /* Material blue */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.custom-btn:hover {
+  background-color: #1565c0;     /* Darker blue on hover */
+}

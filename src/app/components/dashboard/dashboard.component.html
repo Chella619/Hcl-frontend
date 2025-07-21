@@ -1,0 +1,44 @@
+<h2>Dashboard</h2>
+
+<div class="dashboard-grid">
+    <!-- <mat-card>
+        <h3>Course Statistics</h3>
+        <canvas baseChart [data]="courseData" [type]="'bar'"> </canvas>
+    </mat-card> -->
+
+    <!-- <mat-card>
+        <h3>User Status Breakdown</h3>
+        <canvas baseChart [data]="statusData" [type]="'bar'"> </canvas>
+    </mat-card>
+
+    <mat-card>
+        <h3>Training Provider Insights</h3>
+        <canvas baseChart [data]="providerData" [type]="'bar'"> </canvas>
+    </mat-card> -->
+
+    <mat-accordion>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+            <mat-panel-title> Course Statistics </mat-panel-title>
+            </mat-expansion-panel-header>
+            <canvas baseChart [data]="courseData" [type]="'bar'"> </canvas>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title> User Status Breakdown </mat-panel-title>
+            </mat-expansion-panel-header>
+            <canvas baseChart [data]="statusData" [type]="'bar'"> </canvas>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title> Training Provider Insights </mat-panel-title>
+            </mat-expansion-panel-header>
+            <canvas baseChart [data]="providerData" [type]="'bar'"> </canvas>
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</div>

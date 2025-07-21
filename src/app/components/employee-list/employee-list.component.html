@@ -1,0 +1,70 @@
+<div style="position: relative; margin: auto; background: #faf9fd;">
+    <div style="display: flex; justify-content: flex-end;">
+        <mat-form-field style="width: 300px;" subscriptSizing="dynamic">
+            <mat-label>Search</mat-label>
+            <input [formControl]="searchField" matInput type="text" (input)="searchKey($event)"
+                data-control="search"
+                placeholder="Name, Employee Id, Delegate Id" />
+        </mat-form-field>
+    </div>
+    <mat-table [dataSource]="employees">
+        <ng-container matColumnDef="employeeId">
+            <mat-header-cell *matHeaderCellDef>Employee Id</mat-header-cell>
+            <mat-cell *matCellDef="let e">{{ e?.employee_id }}</mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="delegateId">
+            <mat-header-cell *matHeaderCellDef>Delegate Id</mat-header-cell>
+            <mat-cell *matCellDef="let e">{{ e?.delegate_id }}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Full Name</mat-header-cell>
+          <mat-cell *matCellDef="let e">{{ e?.recordes?.first_name + ' ' + e?.recordes?.last_name }}</mat-cell>
+        </ng-container>
+    
+        <ng-container matColumnDef="action">
+            <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+            <mat-cell *matCellDef="let e">
+                <mat-icon class="actionButton" matTooltip="View" (click)="viewEmployee(e?.recordes?.delegate_id)">remove_red_eye</mat-icon>
+                <mat-icon class="actionButton" matTooltip="Edit" (click)="editEmployee(e)">edit</mat-icon>
+                <mat-icon class="actionButton" matTooltip="Delete" (click)="deleteEmployee(e)">delete</mat-icon>
+            </mat-cell>
+        </ng-container>
+    
+        <mat-header-row *matHeaderRowDef="['name', 'employeeId', 'delegateId', 'action']"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['name', 'employeeId', 'delegateId', 'action']"></mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons (page)="onPageChange($event)" [length]="totalEmployees"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex">
+    </mat-paginator>
+</div>
+
+<ng-template #employeeEditDisplay>
+    <div style="padding: 20px;">
+        <div class="dialog-header">
+            <h2 class="dialog-title">View Employee Details</h2>
+            <button mat-icon-button (click)="dialog.closeAll()" aria-label="Close">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div fxLayout="column" fxLayoutGap="3px" style="padding-top: 20px;" [formGroup]="employeeForm">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" required data-control="firstName" trimVal>
+                <mat-error data-control="firstNameError" *ngIf="employeeForm?.get('firstName')?.hasError('required')">
+                    First Name required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" required data-control="lastName" trimVal>
+                <mat-error data-control="lastNameError" *ngIf="employeeForm?.get('lastName')?.hasError('required')">
+                    Last Name required
+                </mat-error>
+            </mat-form-field>
+            <button class="custom-btn" (click)="onSubmit()">Submit</button>
+        </div>
+    </div>
+</ng-template>

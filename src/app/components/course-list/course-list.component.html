@@ -1,0 +1,122 @@
+<div style="padding: 20px;">
+    <div class="dialog-header">
+        <h2 class="dialog-title">View Employee Details</h2>
+        <button mat-icon-button (click)="dialog.closeAll()" aria-label="Close">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <div style="padding-top: 20px;">
+        <div style="display: flex; place-content: center space-between;">
+            <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Search</mat-label>
+                <input [formControl]="searchField" matInput type="text" (input)="searchKey()"
+                    data-control="search"
+                    placeholder="Title, country, Training Provided By" />
+            </mat-form-field>
+            <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Status</mat-label>
+                <mat-select (selectionChange)="filter($event)">
+                    <mat-option *ngFor="let status of statusData" [value]="status">{{status}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-table [dataSource]="courses.records || []" style="margin: 20px 0 20px 0;">
+                <ng-container matColumnDef="courseTitle">
+                    <mat-header-cell *matHeaderCellDef>Course Title</mat-header-cell>
+                    <mat-cell *matCellDef="let e">{{ e?.course_title }}</mat-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="country">
+                    <mat-header-cell *matHeaderCellDef>Country</mat-header-cell>
+                    <mat-cell *matCellDef="let e">{{ e?.country }}</mat-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="trainingProvided">
+                    <mat-header-cell *matHeaderCellDef>Training Provided By</mat-header-cell>
+                    <mat-cell *matCellDef="let e">
+                        <span class="ellipsis" [matTooltip]="e?.training_provider">{{ e?.training_provider }}</span></mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell *matCellDef="let e">{{ e?.status }}</mat-cell>
+                </ng-container>
+        
+                <ng-container matColumnDef="validFrom">
+                    <mat-header-cell *matHeaderCellDef>Valid From</mat-header-cell>
+                    <mat-cell *matCellDef="let e">{{ e?.valid_from }}</mat-cell>
+                </ng-container>
+        
+                <ng-container matColumnDef="validUntil">
+                    <mat-header-cell *matHeaderCellDef>Valid Until</mat-header-cell>
+                    <mat-cell *matCellDef="let e">{{ e?.valid_until }}</mat-cell>
+                </ng-container>
+            
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                    <mat-cell *matCellDef="let e; let i = index" style="padding: 15px;">
+                        <mat-icon class="actionButton" matTooltip="Edit" (click)="editCourse(e, i)">edit</mat-icon>
+                        <mat-icon class="actionButton" matTooltip="Delete" (click)="deleteCourse(i)">delete</mat-icon>
+                    </mat-cell>
+                </ng-container>
+            
+                <mat-header-row *matHeaderRowDef="['courseTitle', 'status', 'country', 'trainingProvided', 'validFrom', 'validUntil', 'action']"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['courseTitle', 'status', 'country', 'trainingProvided','validFrom', 'validUntil', 'action']"></mat-row>
+            </mat-table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons (page)="onPageChange($event)" [length]="totalEmployees"
+                [pageSize]="pageSize"
+                [pageIndex]="pageIndex">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
+
+<ng-template #coursesEditDisplay>
+    <ng-container>
+        <div style="padding: 20px;" [formGroup]="courseForm">
+            <div class="dialog-header">
+                <h2 class="dialog-title">Edit Employee Details</h2>
+                <button mat-icon-button (click)="this.myDialogRef.close()" aria-label="Close">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            <div style="padding-top: 20px;">
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Status</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option *ngFor="let status of statusData" [value]="status">{{status}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Training Provided By</mat-label>
+                    <input matInput formControlName="trainingProvided" required data-control="trainingProvided" trimVal>
+                    <mat-error data-control="trainingProvidedError" *ngIf="courseForm?.get('trainingProvided')?.hasError('required')">
+                        Training Provided By is required
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Valid From</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="validFrom" />
+                    <mat-datepicker-toggle matIconSuffix [for]="picker">
+                        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+    
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 100%;">
+                    <mat-label>Valid Until</mat-label>
+                    <input matInput [matDatepicker]="picker1" formControlName="validUntil" [min]="courseForm.get('validFrom')?.value"/>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker1">
+                        <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker>
+                    <mat-error data-control="trainingProvidedError" *ngIf="courseForm?.get('validFrom')?.value > courseForm?.get('validUntil')?.value">
+                        Valid Until date should be greater than valid From date
+                    </mat-error>
+                </mat-form-field>
+                <button class="custom-btn" (click)="onSubmit()">Submit</button>
+            </div>
+        </div>
+    </ng-container>
+</ng-template>
